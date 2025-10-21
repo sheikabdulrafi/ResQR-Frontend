@@ -13,7 +13,7 @@ const Header = () => {
         { withCredentials: true }
       );
       toast.success("Logged out successfully!");
-      window.location.reload(); // refresh the page after logout
+      navigate("/user-auth"); // refresh the page after logout
     } catch (err) {
       console.error(err);
       toast.error("Logout failed. Please try again.");

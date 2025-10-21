@@ -1,14 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt, FaPlus } from "react-icons/fa";
-import userData from "../assets/response.json"; // import JSON
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import LoadingPage from "../pages/LoadingPage";
 
 const GuardiansPage = () => {
   const [guardians, setGuardians] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (userData && userData.guardains) {
-      setGuardians(userData.guardains);
-    }
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get(
+          "https://resqr-ckss.onrender.com/user/verify",
+          { withCredentials: true }
+        );
+
+        if (res.data.success && res.data.data.guardains) {
+          // populate guardians from backend
+          const fetchedGuardians = res.data.data.guardains.map((g) => ({
+            ...g,
+            _id: g._id || Date.now().toString(),
+          }));
+          setGuardians(fetchedGuardians);
+        } else {
+          toast.error("You must be logged in to access this page");
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Session verification failed. Please login again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   const handleAddGuardian = () => {
@@ -34,16 +60,24 @@ const GuardiansPage = () => {
     const { name, value, type, checked } = e.target;
     setGuardians((prev) =>
       prev.map((g) =>
-        g._id === _id ? { ...g, [name]: type === "checkbox" ? checked : value } : g
+        g._id === _id
+          ? { ...g, [name]: type === "checkbox" ? checked : value }
+          : g
       )
     );
   };
 
+  if (loading) return <LoadingPage />;
+
   return (
-    <section className="guardians-page" style={{height: "auto"}}>
+    <section className="guardians-page" style={{ height: "auto" }}>
       <header>
         <h1>Guardians</h1>
-        <FaPlus className="add-icon" onClick={handleAddGuardian} title="Add Guardian" />
+        <FaPlus
+          className="add-icon"
+          onClick={handleAddGuardian}
+          title="Add Guardian"
+        />
       </header>
 
       {guardians.length === 0 ? (
@@ -90,7 +124,7 @@ const GuardiansPage = () => {
                   <input
                     type="number"
                     name="age"
-                    value={g.age.$numberInt || g.age} // handle JSON number format
+                    value={g.age?.$numberInt || g.age || ""}
                     onChange={(e) => handleChange(e, g._id)}
                   />
                 </div>
@@ -153,7 +187,8 @@ const GuardiansPage = () => {
           ))}
         </div>
       )}
-      <button className="button" >Update</button>
+
+      <button className="button">Update</button>
     </section>
   );
 };

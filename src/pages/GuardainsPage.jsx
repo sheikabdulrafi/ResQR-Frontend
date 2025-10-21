@@ -75,6 +75,7 @@ const GuardiansPage = () => {
 
     const primary = guardians.filter((g) => g.isPrimary).length;
     const pdf = guardians.filter((g) => g.hasPdfAccess).length;
+
     if (primary < 1 || pdf < 1) {
       toast.error(
         "At least one guardian must be Primary and one must have PDF access"
@@ -106,10 +107,10 @@ const GuardiansPage = () => {
         toast.success("Guardians updated successfully!");
         const updatedUser = res.data.data;
 
-        // ✅ Update localStorage with the new data
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        // ✅ Update localStorage with new user data
+        localStorage.setItem("userData", JSON.stringify(updatedUser));
 
-        // Update state to reflect backend data
+        // ✅ Update state with saved guardians
         setGuardians(updatedUser.guardains || guardians);
       } else {
         toast.error(res.data.message || "Failed to update guardians");
@@ -249,7 +250,7 @@ const GuardiansPage = () => {
         onClick={handleUpdateGuardians}
         disabled={updating}
       >
-        {updating ? "Updating..." : "Update Guardians"}
+        {updating ? "Updating..." : "Update"}
       </button>
     </section>
   );

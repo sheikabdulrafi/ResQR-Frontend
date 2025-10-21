@@ -45,7 +45,7 @@ const QRPage = () => {
 
   if (!user) return <p>Please login to access this page.</p>;
 
-  const offlineValue = `smsto:+919398969766?body=QR_SCANNED_ID:${user.id}`;
+  const offlineValue = `smsto:+919398969766:QR_SCANNED_ID:${user.id}`;
   const onlineValue = `https://sheikabdulrafi.github.io/lifesaver/?id=${user.id}`;
 
   return (

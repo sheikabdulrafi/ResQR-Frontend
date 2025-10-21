@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { setUser } from "../slices/userSlice.js";
+import { setUser } from "../Slices/userSlice.js";
 import LoadingPage from "../pages/LoadingPage";
 
 const LoginForm = () => {

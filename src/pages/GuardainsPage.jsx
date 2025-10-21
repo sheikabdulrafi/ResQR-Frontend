@@ -7,6 +7,7 @@ import LoadingPage from "../pages/LoadingPage";
 const GuardiansPage = () => {
   const [guardians, setGuardians] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -17,10 +18,9 @@ const GuardiansPage = () => {
         );
 
         if (res.data.success && res.data.data.guardains) {
-          // populate guardians from backend
           const fetchedGuardians = res.data.data.guardains.map((g) => ({
             ...g,
-            _id: g._id || Date.now().toString(),
+            _id: g._id || g.guardainId || Date.now().toString(),
           }));
           setGuardians(fetchedGuardians);
         } else {
@@ -66,6 +66,62 @@ const GuardiansPage = () => {
       )
     );
   };
+
+  const handleUpdateGuardians = async () => {
+    if (guardians.length === 0) {
+      toast.error("Guardian list cannot be empty");
+      return;
+    }
+
+    const primary = guardians.filter((g) => g.isPrimary).length;
+    const pdf = guardians.filter((g) => g.hasPdfAccess).length;
+    if (primary < 1 || pdf < 1) {
+      toast.error(
+        "At least one guardian must be Primary and one must have PDF access"
+      );
+      return;
+    }
+
+    try {
+      setUpdating(true);
+      const payload = guardians.map((g) => ({
+        guardainId: g.guardainId || g._id,
+        firstName: g.firstName,
+        lastName: g.lastName,
+        age: Number(g.age),
+        gender: g.gender,
+        email: g.email,
+        phoneNumber: g.phoneNumber,
+        isPrimary: g.isPrimary,
+        hasPdfAccess: g.hasPdfAccess,
+      }));
+
+      const res = await axios.post(
+        "https://resqr-ckss.onrender.com/user/guardain/update",
+        payload,
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        toast.success("Guardians updated successfully!");
+        const updatedUser = res.data.data;
+
+        // ✅ Update localStorage with the new data
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        // Update state to reflect backend data
+        setGuardians(updatedUser.guardains || guardians);
+      } else {
+        toast.error(res.data.message || "Failed to update guardians");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Error updating guardians");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
 
   if (loading) return <LoadingPage />;
 
@@ -124,7 +180,7 @@ const GuardiansPage = () => {
                   <input
                     type="number"
                     name="age"
-                    value={g.age?.$numberInt || g.age || ""}
+                    value={g.age || ""}
                     onChange={(e) => handleChange(e, g._id)}
                   />
                 </div>
@@ -188,7 +244,13 @@ const GuardiansPage = () => {
         </div>
       )}
 
-      <button className="button">Update</button>
+      <button
+        className="button"
+        onClick={handleUpdateGuardians}
+        disabled={updating}
+      >
+        {updating ? "Updating..." : "Update Guardians"}
+      </button>
     </section>
   );
 };

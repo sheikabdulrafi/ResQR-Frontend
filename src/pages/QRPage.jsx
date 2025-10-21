@@ -1,140 +1,80 @@
-import React, { useEffect, useState } from "react";
-import QRCode from "qrcode.react";
+import { useEffect, useState, useRef } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import jsPDF from "jspdf";
 import axios from "axios";
-import LoadingPage from "../pages/LoadingPage";
-import { toast } from "react-hot-toast";
+import LoadingPage from "./LoadingPage";
 
 const QRPage = () => {
-  const [userData, setUserData] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [qrGenerated, setQrGenerated] = useState(false);
+  const offlineRef = useRef();
+  const onlineRef = useRef();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // Step 1: Verify user session
-        const verifyRes = await axios.get(
+        const res = await axios.get(
           "https://resqr-ckss.onrender.com/user/verify",
-          { withCredentials: true }
-        );
-
-        if (verifyRes.data.success) {
-          const user = verifyRes.data.data;
-          setUserData(user);
-
-          // Step 2: Check if QR already generated
-          if (!user.hasGeneratedQR) {
-            setQrGenerated(true);
-
-            // Hit backend endpoint to mark QR issued
-            await axios.post(
-              "https://resqr-ckss.onrender.com/user/qr/issued",
-              { userId: user.id },
-              { withCredentials: true }
-            );
-          } else {
-            setQrGenerated(true);
+          {
+            withCredentials: true,
           }
-        } else {
-          toast.error("You must be logged in to access this page");
-        }
+        );
+        setUser(res.data.data);
       } catch (err) {
         console.error(err);
-        toast.error("Session verification failed. Please login again.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchUser();
   }, []);
 
   const downloadPDF = () => {
-    if (!userData) return;
-    const doc = new jsPDF();
+    const pdf = new jsPDF();
+    const offlineSvg = offlineRef.current.querySelector("svg");
+    const onlineSvg = onlineRef.current.querySelector("svg");
 
-    doc.setFontSize(16);
-    doc.text("Offline QR", 30, 20);
-    doc.text("Online QR", 130, 20);
+    if (offlineSvg)
+      pdf.svg(offlineSvg, { x: 10, y: 10, width: 80, height: 80 });
+    if (onlineSvg) pdf.svg(onlineSvg, { x: 110, y: 10, width: 80, height: 80 });
 
-    // Draw QR codes as images
-    const offlineQR = document.getElementById("offlineQR");
-    const onlineQR = document.getElementById("onlineQR");
-
-    doc.addImage(offlineQR.toDataURL(), "PNG", 20, 30, 60, 60);
-    doc.addImage(onlineQR.toDataURL(), "PNG", 120, 30, 60, 60);
-
-    doc.save("lifesaver_qr.pdf");
+    pdf.save("qr_codes.pdf");
   };
 
   if (loading) return <LoadingPage />;
 
-  if (!userData) return <p>Please login to view QR codes</p>;
+  if (!user) return <p>Please login to access this page.</p>;
 
-  // URLs
-  const onlineQRUrl = `https://sheikabdulrafi.github.io/lifesaver/?id=${userData.id}`;
-  const offlineSMSUrl = `smsto:+919398969766?body=QR_SCANNED_ID:${userData.id}`;
+  const offlineValue = `smsto:+919398969766?body=QR_SCANNED_ID:${user.id}`;
+  const onlineValue = `https://sheikabdulrafi.github.io/lifesaver/?id=${user.id}`;
 
   return (
-    <section style={{ padding: "20px", textAlign: "center" }}>
-      <h1>Lifesaver QR Codes</h1>
+    <section>
+      <h1>QR Codes</h1>
       <div
         style={{
           display: "flex",
+          gap: "20px",
           justifyContent: "center",
-          gap: "40px",
-          marginTop: "30px",
+          marginTop: "20px",
         }}
       >
         <div
-          style={{
-            border: "2px solid #333",
-            padding: "20px",
-            borderRadius: "10px",
-          }}
+          ref={offlineRef}
+          style={{ border: "1px solid black", padding: "10px" }}
         >
           <h3>Offline QR</h3>
-          <QRCode
-            id="offlineQR"
-            value={offlineSMSUrl}
-            size={180}
-            level="H"
-            includeMargin={true}
-          />
+          <QRCodeSVG value={offlineValue} size={150} />
         </div>
-
         <div
-          style={{
-            border: "2px solid #333",
-            padding: "20px",
-            borderRadius: "10px",
-          }}
+          ref={onlineRef}
+          style={{ border: "1px solid black", padding: "10px" }}
         >
           <h3>Online QR</h3>
-          <QRCode
-            id="onlineQR"
-            value={onlineQRUrl}
-            size={180}
-            level="H"
-            includeMargin={true}
-          />
+          <QRCodeSVG value={onlineValue} size={150} />
         </div>
       </div>
-
-      <button
-        onClick={downloadPDF}
-        style={{
-          marginTop: "30px",
-          padding: "10px 20px",
-          fontSize: "16px",
-          backgroundColor: "crimson",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
+      <button onClick={downloadPDF} style={{ marginTop: "20px" }}>
         Download PDF
       </button>
     </section>

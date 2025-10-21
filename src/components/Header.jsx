@@ -39,6 +39,9 @@ const Header = () => {
           <Link to="/emergency-info">Emergencies</Link>
         </li>
         <li>
+          <Link to={"#"}>Mange QR</Link>
+        </li>
+        <li>
           <Link to="/grievance">Grievances</Link>
         </li>
         <li>

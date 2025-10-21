@@ -8,15 +8,15 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "https://resqr-ckss.onrender.com/user/logout",
+        "https://resqr-ckss.onrender.com/auth/logout",
         {},
         { withCredentials: true }
       );
-      toast.success("Logged out successfully");
-      navigate("/user-auth"); // redirect to login
-    } catch (error) {
-      console.error(error);
-      toast.error("Logout failed");
+      toast.success("Logged out successfully!");
+      window.location.reload(); // refresh the page after logout
+    } catch (err) {
+      console.error(err);
+      toast.error("Logout failed. Please try again.");
     }
   };
 

@@ -26,7 +26,7 @@ const App = () => {
         <Route path="/guardain-update" element={<GuardainsPage />} />
         <Route path="/medical-update" element={<MedicalInfo />} />
         <Route path="/emergency-info" element={<EmergencyPage />} />
-        <Route path="/grrievance" element={<GrievancePage />} />
+        <Route path="/grievance" element={<GrievancePage />} />
         <Route path="/manage-qr" element={<QRPage />} />
         <Route path="/logout" element={<LoadingPage />} />
       </Routes>

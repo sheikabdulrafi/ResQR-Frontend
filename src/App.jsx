@@ -9,6 +9,7 @@ import GuardainsPage from "./pages/GuardainsPage";
 import MedicalInfo from "./pages/MedicalInfo";
 import EmergencyPage from "./pages/EmergencyPage";
 import GrievancePage from "./pages/GrievancePage";
+import QRPage from "./pages/QRPage";
 import LoadingPage from "./pages/LoadingPage";
 import { Toaster } from "react-hot-toast";
 
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/medical-update" element={<MedicalInfo />} />
         <Route path="/emergency-info" element={<EmergencyPage />} />
         <Route path="/grrievance" element={<GrievancePage />} />
+        <Route path="/manage-qr" element={<QRPage />} />
         <Route path="/logout" element={<LoadingPage />} />
       </Routes>
       <Footer />

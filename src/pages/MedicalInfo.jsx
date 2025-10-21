@@ -7,6 +7,7 @@ import LoadingPage from "../pages/LoadingPage";
 const MedicalInfo = () => {
   const [medicalHistories, setMedicalHistories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -54,6 +55,49 @@ const MedicalInfo = () => {
     setMedicalHistories((prev) =>
       prev.map((h, i) => (i === index ? { ...h, [name]: value } : h))
     );
+  };
+
+  const handleUpdateMedicalHistory = async () => {
+    if (medicalHistories.length === 0) {
+      toast.error("Medical history list cannot be empty");
+      return;
+    }
+
+    try {
+      setUpdating(true);
+      const payload = medicalHistories.map((h) => ({
+        condition: h.condition,
+        medication: h.medication,
+        doctorName: h.doctorName,
+        hospitalName: h.hospitalName,
+        hospitalContact: h.hospitalContact,
+        notes: h.notes,
+      }));
+
+      const res = await axios.post(
+        "https://resqr-ckss.onrender.com/user/medicalhistory/update",
+        payload,
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        toast.success("Medical history updated successfully!");
+        const updatedUser = res.data.data;
+
+        // ✅ Replace user data in localStorage with updated info
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        // ✅ Update component state
+        setMedicalHistories(updatedUser.medicalHistories || []);
+      } else {
+        toast.error(res.data.message || "Failed to update medical history");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Error updating medical history");
+    } finally {
+      setUpdating(false);
+    }
   };
 
   if (loading) return <LoadingPage />;
@@ -151,7 +195,13 @@ const MedicalInfo = () => {
         </div>
       )}
 
-      <button className="button">Update</button>
+      <button
+        className="button"
+        onClick={handleUpdateMedicalHistory}
+        disabled={updating}
+      >
+        {updating ? "Updating..." : "Update"}
+      </button>
     </section>
   );
 };

@@ -1,6 +1,8 @@
 import { FaEdit } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import responseData from "../assets/response.json";
+import axios from "axios";
+import LoadingPage from "../pages/LoadingPage";
+import { toast } from "react-hot-toast";
 
 const PersonalPage = () => {
   const [isEditable, setIsEditable] = useState(false);
@@ -11,48 +13,102 @@ const PersonalPage = () => {
     gender: "",
     phoneNumber: "",
     email: "",
-    role: ""
+    role: "",
   });
+  const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    if (responseData) {
-      const timestamp = Number(responseData.dateOfBirth.$date.$numberLong);
-      const dob = new Date(timestamp);
+    const verifyUser = async () => {
+      try {
+        // Call backend to verify token
+        const response = await axios.get(
+          "https://resqr-ckss.onrender.com/user/verify",
+          { withCredentials: true }
+        );
 
-      const year = dob.getFullYear();
-      const month = String(dob.getMonth() + 1).padStart(2, "0");
-      const day = String(dob.getDate()).padStart(2, "0");
-      const localDate = `${year}-${month}-${day}`;
+        if (response.data.success) {
+          setIsAuthorized(true);
 
-      setFormData({
-        firstName: responseData.firstName,
-        lastName: responseData.lastName,
-        dateOfBirth: localDate,
-        gender: responseData.gender,
-        phoneNumber: responseData.phoneNumber,
-        email: responseData.email,
-        role: responseData.role
-      });
-    }
+          // Populate formData from backend
+          const user = response.data.data;
+          const dob = new Date(user.dateOfBirth);
+
+          const year = dob.getFullYear();
+          const month = String(dob.getMonth() + 1).padStart(2, "0");
+          const day = String(dob.getDate()).padStart(2, "0");
+          const localDate = `${year}-${month}-${day}`;
+
+          setFormData({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            dateOfBirth: localDate,
+            gender: user.gender,
+            phoneNumber: user.phoneNumber,
+            email: user.email,
+            role: user.role,
+          });
+        } else {
+          toast.error("Unauthorized. Please log in.");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Unauthorized. Please log in.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyUser();
   }, []);
 
   const handleChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
-  const handleUpdate = () => {
-    console.log("Updated Data:", formData);
-    setIsEditable(false);
+  const handleUpdate = async () => {
+    try {
+      const payload = { ...formData };
+
+      const response = await axios.put(
+        "https://resqr-ckss.onrender.com/user/update-personal",
+        payload,
+        { withCredentials: true }
+      );
+
+      if (response.data.success) {
+        toast.success("Details updated successfully!");
+        setIsEditable(false);
+      } else {
+        toast.error(response.data.message || "Update failed");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong while updating.");
+    }
   };
+
+  if (loading) return <LoadingPage />;
+
+  if (!isAuthorized) {
+    return (
+      <p className="text-center mt-10 text-red-500">
+        Access Denied. Please log in.
+      </p>
+    );
+  }
 
   return (
     <section className="personal-page">
       <header>
         <h1>Personal Details</h1>
-        <FaEdit className="edit-icon" onClick={() => setIsEditable(!isEditable)} />
+        <FaEdit
+          className="edit-icon"
+          onClick={() => setIsEditable(!isEditable)}
+        />
       </header>
 
       <main>
@@ -127,12 +183,7 @@ const PersonalPage = () => {
 
           <div className="form-group">
             <label>Role:</label>
-            <input
-              type="text"
-              name="role"
-              value={formData.role}
-              disabled
-            />
+            <input type="text" name="role" value={formData.role} disabled />
           </div>
 
           {isEditable && (

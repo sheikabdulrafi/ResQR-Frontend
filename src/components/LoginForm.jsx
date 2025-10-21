@@ -16,7 +16,7 @@ const LoginForm = () => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const res = await axios.get(
+        const res = await axios.post(
           "https://resqr-ckss.onrender.com/user/verify",
           { withCredentials: true }
         );

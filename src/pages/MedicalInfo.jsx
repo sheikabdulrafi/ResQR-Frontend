@@ -1,14 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { FaTrashAlt, FaPlus } from "react-icons/fa";
-import userData from "../assets/response.json"; // import JSON
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import LoadingPage from "../pages/LoadingPage";
 
 const MedicalInfo = () => {
   const [medicalHistories, setMedicalHistories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (userData && userData.medicalHistories) {
-      setMedicalHistories(userData.medicalHistories);
-    }
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get(
+          "https://resqr-ckss.onrender.com/user/verify",
+          { withCredentials: true }
+        );
+
+        if (res.data.success && res.data.data.medicalHistories) {
+          setMedicalHistories(res.data.data.medicalHistories);
+        } else {
+          toast.error("You must be logged in to access this page");
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Session verification failed. Please login again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   const handleAddHistory = () => {
@@ -35,15 +56,23 @@ const MedicalInfo = () => {
     );
   };
 
+  if (loading) return <LoadingPage />;
+
   return (
-    <section className="medical-page" style={{height: "auto"}}>
+    <section className="medical-page" style={{ height: "auto" }}>
       <header>
         <h1>Medical Information</h1>
-        <FaPlus className="add-icon" onClick={handleAddHistory} title="Add Medical History" />
+        <FaPlus
+          className="add-icon"
+          onClick={handleAddHistory}
+          title="Add Medical History"
+        />
       </header>
 
       {medicalHistories.length === 0 ? (
-        <p className="no-records">No medical history yet. Click "+" to add one.</p>
+        <p className="no-records">
+          No medical history yet. Click "+" to add one.
+        </p>
       ) : (
         <div className="history-list">
           {medicalHistories.map((h, index) => (
@@ -121,9 +150,10 @@ const MedicalInfo = () => {
           ))}
         </div>
       )}
+
       <button className="button">Update</button>
     </section>
   );
 };
 
-export default MedicalInfo
+export default MedicalInfo;

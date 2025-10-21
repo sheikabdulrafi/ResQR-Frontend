@@ -1,0 +1,127 @@
+{
+  "_id": { "$oid": "68e6793d2873236ade6db6f5" },
+  "firstName": "Abdulrafi",
+  "lastName": "Sheik",
+  "dateOfBirth": { "$date": { "$numberLong": "958501800000" } },
+  "gender": "Male",
+  "phoneNumber": "+919394003049",
+  "email": "sheikabdulrafi@gmail.com",
+  "role": "ADMIN",
+  "password": "$2a$10$pRXaS4YPx/VIQixB1R3s8.sxYudVUuOcm7Pdu3wYvmeZ9dDV0YCNq",
+  "hasGeneratedQR": true,
+  "isQrActive": true,
+  "guardains": [
+    {
+      "_id": "e35d3aa2-f7d9-4a5a-90bf-8f16ca47bf35",
+      "firstName": "Hussain Saheb",
+      "lastName": "Sheik",
+      "age": { "$numberInt": "55" },
+      "gender": "Male",
+      "email": "smssangham718@gmail.com",
+      "phoneNumber": "+919394003049",
+      "isPrimary": true,
+      "hasPdfAccess": true
+    },
+    {
+      "_id": "3d21f464-6a1b-4d5c-a403-36290dcc189f",
+      "firstName": "Mohammad Umar",
+      "lastName": "Sheik",
+      "age": { "$numberInt": "22" },
+      "gender": "Male",
+      "email": "mohammadumarsheik@gmail.com",
+      "phoneNumber": "+919398969766",
+      "isPrimary": false,
+      "hasPdfAccess": true
+    }
+  ],
+  "medicalHistories": [],
+  "emergencyHistories": [
+    {
+      "_id": "256d9e2a-7a80-4bed-a242-82c73ab91c11",
+      "passerByPhoneNumber": "+919676628617",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "636f0d26-1b13-40a0-bef5-da5e2ac0f24e",
+      "scannedTime": { "$date": { "$numberLong": "1759987533343" } }
+    },
+    {
+      "_id": "eac7edf2-ae78-4bac-a6a5-2e04f31bcbb6",
+      "passerByPhoneNumber": "+919676628617",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "d632751f-fb68-4b0d-b060-0aa9d6f5a4f7",
+      "scannedTime": { "$date": { "$numberLong": "1759992300497" } }
+    },
+    {
+      "_id": "0fa24031-3327-4809-8b7a-98f7d99e5673",
+      "passerByPhoneNumber": "+919676628617",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "90757820-c2bd-4d4b-99da-95d5a2fa1439",
+      "scannedTime": { "$date": { "$numberLong": "1759994151838" } },
+      "typeOfIncident": "accident"
+    },
+    {
+      "_id": "61f2cb0f-7776-4020-9442-cc795f70856c",
+      "passerByPhoneNumber": "+917569936994",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "fd11d7bc-c6e3-49bf-ae12-9ef883d43742",
+      "scannedTime": { "$date": { "$numberLong": "1759994315803" } },
+      "typeOfIncident": "accident"
+    },
+    {
+      "_id": "0bba7642-31c9-4fe9-b0e8-0514b0d2d341",
+      "passerByPhoneNumber": "+917569936994",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "07d6f58a-6829-4a5f-b6c3-678971572d51",
+      "scannedTime": { "$date": { "$numberLong": "1759994635770" } },
+      "typeOfIncident": "accident"
+    },
+    {
+      "_id": "5307eb05-24eb-4b83-aee5-cf1ebed2bd9e",
+      "passerByPhoneNumber": "+917569936994",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "464969db-ff5c-4d8f-9368-43013c71eb95",
+      "scannedTime": { "$date": { "$numberLong": "1759994784253" } },
+      "typeOfIncident": "accident"
+    },
+    {
+      "_id": "a4831ef0-9633-4e3a-9983-32525b4dd50f",
+      "passerByPhoneNumber": "+917569936994",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "cc822116-0590-4f6d-a08b-1e6401ca4b8d",
+      "scannedTime": { "$date": { "$numberLong": "1759994975077" } },
+      "typeOfIncident": "accident"
+    },
+    {
+      "_id": "7bbd0cb5-2b77-4b32-ad25-51b2f513c09a",
+      "passerByPhoneNumber": "+917569936994",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "228f6395-366b-460d-8431-fce14fc25a67",
+      "scannedTime": { "$date": { "$numberLong": "1759997343820" } },
+      "typeOfIncident": "accident"
+    },
+    {
+      "_id": "26c5e94f-ae3c-4532-a74a-9440cc344951",
+      "passerByPhoneNumber": "+917569936994",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "1fcba4a4-3891-4385-8132-c7e0c596995f",
+      "scannedTime": { "$date": { "$numberLong": "1760002393721" } },
+      "typeOfIncident": "accident"
+    },
+    {
+      "_id": "bf9b8dfc-398d-49f7-b874-6e69ce64debf",
+      "passerByPhoneNumber": "+916302413196",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "bb1965dd-004b-4881-a5c0-c02f55c42833",
+      "scannedTime": { "$date": { "$numberLong": "1760002906494" } },
+      "typeOfIncident": "Accident"
+    },
+    {
+      "_id": "0ed95773-072b-4585-a7c7-1a68687ae04d",
+      "passerByPhoneNumber": "+916302413196",
+      "userId": "68e6793d2873236ade6db6f5",
+      "tokenForPasserBy": "ce7cdc58-1101-46a4-8f03-a4fad0078811",
+      "scannedTime": { "$date": { "$numberLong": "1760002968415" } },
+      "typeOfIncident": "Medical Emergency"
+    }
+  ],
+  "_class": "com.resqr.lifesaver.model.UserModel"
+}

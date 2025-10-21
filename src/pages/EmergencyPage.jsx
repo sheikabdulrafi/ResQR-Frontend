@@ -31,8 +31,8 @@ const EmergencyPage = () => {
     fetchUserData();
   }, []);
 
-  const formatDateTime = (timestamp) => {
-    const date = new Date(Number(timestamp));
+  const formatDateTime = (isoString) => {
+    const date = new Date(isoString);
     return date.toLocaleString(); // Local date and time
   };
 
@@ -48,15 +48,17 @@ const EmergencyPage = () => {
         <p className="no-records">No emergency records found.</p>
       ) : (
         <div className="history-list">
-          {emergencyHistories.map((h, index) => (
-            <div className="history-card" key={index}>
+          {emergencyHistories.map((h) => (
+            <div className="history-card" key={h.historyId}>
               <div className="card-header">
                 <h2>{h.typeOfIncident || "General Alert"}</h2>
               </div>
               <div className="card-body">
                 <p>
-                  <strong>Scanned Time:</strong>{" "}
-                  {formatDateTime(h.scannedTime.$date.$numberLong)}
+                  <strong>Scanned Time:</strong> {formatDateTime(h.scannedTime)}
+                </p>
+                <p>
+                  <strong>Passer By Phone:</strong> {h.passerByPhoneNumber}
                 </p>
               </div>
             </div>

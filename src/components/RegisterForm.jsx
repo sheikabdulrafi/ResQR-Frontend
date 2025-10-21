@@ -43,7 +43,7 @@ const RegisterForm = () => {
         gender: formData.gender,
         phoneNumber: formData.phoneNumber,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       };
 
       const response = await axios.post(
@@ -53,8 +53,19 @@ const RegisterForm = () => {
       );
 
       if (response.data.success) {
-        toast.success("Registration successful!");
-        window.location.reload();
+        toast.success("Registration successful! Log in to continue");
+
+        // Reset the form fields
+        setFormData({
+          firstName: "",
+          lastName: "",
+          dateOfBirth: "",
+          gender: "",
+          phoneNumber: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
       } else {
         toast.error(response.data.message || "Registration failed");
       }

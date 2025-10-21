@@ -1,9 +1,14 @@
-// src/redux/userSlice.js
+// src/redux/Slices/userSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
+// ✅ Load user from localStorage on startup
+const storedUser = localStorage.getItem("user")
+  ? JSON.parse(localStorage.getItem("user"))
+  : null;
+
 const initialState = {
-  currentUser: null,
-  emergencies: [],
+  currentUser: storedUser,
+  emergencies: storedUser?.emergencyHistories || [],
   loading: false,
   error: null,
 };
@@ -15,10 +20,14 @@ const userSlice = createSlice({
     setUser: (state, action) => {
       state.currentUser = action.payload;
       state.emergencies = action.payload.emergencyHistories || [];
+      // ✅ Save user to localStorage
+      localStorage.setItem("user", JSON.stringify(action.payload));
     },
     clearUser: (state) => {
       state.currentUser = null;
       state.emergencies = [];
+      // ✅ Remove user from localStorage
+      localStorage.removeItem("user");
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -28,14 +37,33 @@ const userSlice = createSlice({
     },
     addEmergency: (state, action) => {
       state.emergencies.push(action.payload);
+      // ✅ Update emergencies in stored user
+      const updatedUser = {
+        ...state.currentUser,
+        emergencyHistories: state.emergencies,
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     },
     removeEmergency: (state, action) => {
       state.emergencies = state.emergencies.filter(
         (e) => e.historyId !== action.payload
       );
+      // ✅ Update localStorage
+      const updatedUser = {
+        ...state.currentUser,
+        emergencyHistories: state.emergencies,
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     },
   },
 });
 
-export const { setUser, clearUser, setLoading, setError, addEmergency, removeEmergency } = userSlice.actions;
+export const {
+  setUser,
+  clearUser,
+  setLoading,
+  setError,
+  addEmergency,
+  removeEmergency,
+} = userSlice.actions;
 export default userSlice.reducer;

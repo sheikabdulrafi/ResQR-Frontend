@@ -12,7 +12,7 @@ const UserAuth = () => {
       <div className="main">
         <div className="titles">
           <h1>Welcome to ResQR</h1>
-          <p>Your gateway to seamless restaurant experiences. Log in or register to get started!</p>
+          <p>Log in or register to get started!</p>
           <img src={hands} alt="" />
         </div>
 
